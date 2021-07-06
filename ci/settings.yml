@@ -1,0 +1,57 @@
+---
+meta:
+  name:    alpine-bash
+  target:  tc
+  url:     https://ci.training.gstack.io
+
+  initial_version: 1.0.0
+
+  git:
+    email:  ((git-commit-email))
+    name:   ((git-commit-name))
+
+  image:
+    registry:
+      #username: ((docker_registry_username))
+      #password: ((docker-registry-password))
+
+  dockerhub:
+    username: ((dockerhub-username))
+    email:    ((dockerhub-email))
+    password: ((dockerhub-password))
+    repository: (( concat "harbor.ci.training.gstack.io" "/" "trainee05" "/" meta.name ))
+
+  aws:
+    bucket:      (( grab meta.pipeline ))
+    region_name: us-east-1
+    access_key:  ((aws-access-key))
+    secret_key:  ((aws-secret-key))
+
+  github:
+    owner:  debanne
+    repo:   alpine-bash
+    branch: master
+    private_key:  ((github-private-key))
+    access_token: ((github-access-token))
+
+  slack:
+    webhook:       ((slack-webhook))
+    username:      ((slack-username))
+    icon:          ((slack-icon-url))
+    channel:       "#concourse-training"
+
+resources:
+  - name: version
+    source:
+      bucket:            (( prune ))
+      region_name:       (( prune ))
+      key:               (( prune ))
+      access_key_id:     (( prune ))
+      secret_access_key: (( prune ))
+      driver:      git
+      uri:         git@github.com:debanne/pipelines-compass.git
+      branch:      master
+      file:        (( concat "versions/" meta.pipeline ))
+      private_key: |
+        ((github-private-key))
+      git_user:    "((git-commit-name)) <((git-commit-email))>"
